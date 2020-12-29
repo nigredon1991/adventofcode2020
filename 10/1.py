@@ -29,7 +29,7 @@ s_inp = [0] + s_inp + [max(s_inp) + 3]
 # print(s_inp)
 
 for num, elem in enumerate(s_inp):
-    if num == 0 or num == len(s_inp)-1:
+    if num == 0 or num == len(s_inp) - 1:
         continue
     print("num", num, elem)
     print(s_inp[num] - s_inp[num - 1])
@@ -72,11 +72,15 @@ def get_all_could_del(elem_dels, cur_inp):
 
 
 # print(get_all_could_del(elem_del, s_inp))
-end_count = 1
+end_count = 0
+paths = {0: 1}
 
-for r in range(0, len(elem_del)):
-    for e in combinations(elem_del, r):
-        if check_perm(sorted(set(s_inp) ^ set(e))):
-            end_count += 1
-    # print(end_count)
-# breakpoint()
+for r in s_inp[1:]:
+    s = 0
+    for i in [1, 2, 3]:
+        if r - i in paths:
+            s += paths[r - i]
+    paths[r] = s
+
+print(paths)
+print(paths[max(paths)])
