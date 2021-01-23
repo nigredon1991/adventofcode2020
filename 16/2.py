@@ -7,13 +7,14 @@ name_types = []
 your_ticket = []
 nearby_tickets = []
 
+
 def str_to_intervals(t):
     out = []
     for elem in t:
         t = []
-        for substr in elem.split('or'):
-            left, right = int(substr.split('-')[0]), int(substr.split('-')[1])
-            t.append(Interval(left,right, closed='both'))
+        for substr in elem.split("or"):
+            left, right = int(substr.split("-")[0]), int(substr.split("-")[1])
+            t.append(Interval(left, right, closed="both"))
         out.append(t)
     return out
 
@@ -25,28 +26,31 @@ def elem_in_list_intervals(elem, intervals):
     return False
 
 
-
-with open("input_2") as f:
+with open("input") as f:
     inp = f.readline().strip()
-    while inp != '':
-        name_types.append(inp.split(':')[0].strip())
-        types.append(inp.split(':')[1].strip())
+    while inp != "":
+        name_types.append(inp.split(":")[0].strip())
+        types.append(inp.split(":")[1].strip())
         inp = f.readline().strip()
     types = str_to_intervals(types)
     inp = f.readline().strip()
-    if inp == 'your ticket:':
-        your_ticket= f.readline().strip().split(',')
+    if inp == "your ticket:":
+        your_ticket = f.readline().strip().split(",")
     inp = f.readline().strip()
     inp = f.readline().strip()
     if inp == "nearby tickets:":
-        inp = f.readline().strip().split(',')
-        while inp != ['']:
+        inp = f.readline().strip().split(",")
+        while inp != [""]:
             nearby_tickets.append([int(e) for e in inp])
-            inp = f.readline().strip().split(',')
-print(f"{types=}")
-print(f"{name_types=}")
+            inp = f.readline().strip().split(",")
+# print(f"{types=}")
+for num, typ in enumerate(types):
+    print(f"{num=} {typ=}")
+
+
+# print(f"{name_types=}")
 print(f"{your_ticket=}")
-print(f"{nearby_tickets=}")
+# print(f"{nearby_tickets=}")
 
 sum_error = 0
 correct_ticket = []
@@ -64,34 +68,37 @@ for ticket in nearby_tickets:
         continue
     correct_ticket.append(ticket)
 # print(f"{correct_ticket=}")
-print(f"{len(correct_ticket)=}")
+# print(f"{len(correct_ticket)=}")
 # print(f"{len(nearby_tickets)=}")
 
 numbers_free = set(range(len(types)))
-numbers_correct = []
+numbers_correct = {x: set() for x in range(len(types))}
+numbers_maybe = {x: set() for x in range(len(types))}
 
-for num, name in enumerate(name_types):
-    print(f"{name=}")
-    for number in numbers_free:
+for number in numbers_free:
+    for num in set(range(len(types))):
         for ticket in correct_ticket:
-            if not elem_in_list_intervals(ticket[number], types[num]):
-                # print("Not correct_ticket {}, {}".format(ticket[number], types[num]))
+            if not elem_in_list_intervals(ticket[num], types[number]):
                 break
         else:
-            # print("correct_ticket {}, {}".format(numbers_correct, number))
-            numbers_correct.append(number)
-            numbers_free.remove(number)
-            break
+            numbers_maybe[number].add(num)
 
-print()
-print(f"{your_ticket=}")
-print(f"{numbers_correct=}")
-print(f"{len(numbers_correct)=}")
-print(f"{len(your_ticket)=}")
-print(f"{len(name_types)=}")
-out = 1
+out = [-1] * len(types)
+
+while numbers_free:
+    for num, elem in enumerate(numbers_maybe):
+        cur_set = numbers_maybe[elem] & numbers_free
+        if len(cur_set) == 1:
+            cur_elem = cur_set.pop()
+            numbers_free.remove(cur_elem)
+            out[num]= cur_elem
+
+
+
+print(f"{out=}")
+answer = 1
 for num, name in enumerate(name_types):
-    if name.startswith('departure'):
-        out *= int(your_ticket[numbers_correct[num]])
-print()
-print(out)
+    if name.startswith("departure"):
+        print(f'{name=} {your_ticket[out[num]]}')
+        answer *= int(your_ticket[out[num]])
+print(answer)
