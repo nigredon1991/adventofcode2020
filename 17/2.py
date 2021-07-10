@@ -20,7 +20,7 @@ def get_elem_alive(i, j, k, w, array):
             i + elem[0] > (len(array) - 1) or i + elem[0] < 0
             or j + elem[1] > (len(array) - 1) or j + elem[1] < 0
             or k + elem[2] > (len(array) - 1) or k + elem[2] < 0
-            or w + elem[3] > (len(array) - 1) or w + elem[2] < 0
+            or w + elem[3] > (len(array) - 1) or w + elem[3] < 0
         ):
             continue
         if array[i + elem[0]][j + elem[1]][k + elem[2]][w + elem[3]] == 1:
@@ -32,7 +32,7 @@ def get_elem_alive(i, j, k, w, array):
     return 0
 
 
-n = 16
+n = 10
 
 area = np.zeros((n, n, n, n))
 
@@ -40,7 +40,7 @@ k = len(inp)
 
 for num_i, i in enumerate(inp):
     for num_j, j in enumerate(i):
-        area[n // 2][n // 2 - k + num_i][n // 2 - k // 2 + num_j] = 0 if j == "." else 1
+        area[n//2][n // 2][n // 2 - k + num_i][n // 2 - k // 2 + num_j] = 0 if j == "." else 1
 
 for _ in range(6):
     print("Step")
